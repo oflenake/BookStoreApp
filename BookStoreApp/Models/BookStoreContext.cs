@@ -15,6 +15,14 @@ namespace BookStoreApp.Models
         {
         }
 
+        //// Disable Lazy Loading at the context level. I can enable 
+        //// lazy-loading explicitly I need to utilize it.
+        //public BookStoreContext(DbContextOptions<BookStoreContext> options)
+        //    : base(options)
+        //{
+        //    ChangeTracker.LazyLoadingEnabled = false;
+        //}
+
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<AuthorContact> AuthorContact { get; set; }
         public virtual DbSet<Book> Book { get; set; }
@@ -32,6 +40,21 @@ namespace BookStoreApp.Models
                 optionsBuilder.UseSqlServer("Server=KGUPI-MACHINE;Database=BookStore;Trusted_Connection=True;");
             }
         }
+
+        //// Enable Lazy Loading with a call to method: UseLazyLoadingProxies.
+        //// EF Core will then enable lazy loading for any navigation property that 
+        //// can be overridden. Only thing is that it must be virtual and on a 
+        //// class that can be inherited from. For example check Author class, 
+        //// the BookAuthors navigation property will be lazy-loaded.
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder
+        //            .UseLazyLoadingProxies()
+        //            .UseSqlServer("Server=KGUPI-MACHINE;Database=BookStore;Trusted_Connection=True;");
+        //    }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,7 +101,7 @@ namespace BookStoreApp.Models
                 entity.HasOne(d => d.Publisher)
                     .WithMany(p => p.Book)
                     .HasForeignKey(d => d.PublisherId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Book__PublisherI__2D27B809");
             });
 
