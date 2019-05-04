@@ -22,31 +22,31 @@ namespace BookStoreApp.Controllers
             _dataRepository = dataRepository;
         }
 
-        // GET: api/Authors - Get All Authors
+        // GET: api/authors - Get All Authors
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllAction()
         {
             try
             {
-                var authors = _dataRepository.GetAll();
+                var authors = _dataRepository.GetAllData();
                 _logger.LogInfo($"Returned all authors from database.");
 
                 return Ok(authors); // Ok status code is: 200
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetAll action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'AuthorsController.GetAllAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
 
-        // GET: api/Authors/5 - Get Author by id
-        [HttpGet("{id}", Name = "GetAuthor")]
-        public IActionResult Get(int id)
+        // GET: api/authors/4 - Get Author by id
+        [HttpGet("{id}", Name = "GetByIDAuthor")]
+        public IActionResult GetByIDAction(int id)
         {
             try
             {
-                var author = _dataRepository.GetDTO(id);
+                var author = _dataRepository.GetByIDDataDto(id);
 
                 if (author == null)
                 {
@@ -59,14 +59,14 @@ namespace BookStoreApp.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetAuthorById action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'AuthorsController.GetByIDAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
 
-        // POST: api/Authors - Add Author
+        // POST: api/authors - Add Author
         [HttpPost]
-        public IActionResult Post([FromBody] Author author)
+        public IActionResult PostCreateAction([FromBody] Author author)
         {
             try
             {
@@ -82,20 +82,20 @@ namespace BookStoreApp.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                _dataRepository.Add(author);
-                _logger.LogInfo("Author added.");
-                return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
+                _dataRepository.AddData(author);
+                _logger.LogInfo("Author object added.");
+                return CreatedAtRoute("GetByIDAuthor", new { Id = author.Id }, null);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside Add action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'AuthorsController.PostCreateAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
 
-        // PUT: api/Authors/5 - Update Author
+        // PUT: api/authors/4 - Update Author
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Author author)
+        public IActionResult PutUpdateAction(int id, [FromBody] Author author)
         {
             try
             {
@@ -105,26 +105,26 @@ namespace BookStoreApp.Controllers
                     return BadRequest("Author is null.");
                 }
 
-                var authorToUpdate = _dataRepository.Get(id);
+                var authorToUpdate = _dataRepository.GetByIDData(id);
                 if (authorToUpdate == null)
                 {
-                    _logger.LogError($"Employee record with id: {id}, hasn't been found in db.");
-                    return NotFound("The Employee record couldn't be found.");
+                    _logger.LogError($"Author record with id: {id}, hasn't been found in db.");
+                    return NotFound("The Author record couldn't be found.");
                 }
 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogError("Invalid auther object sent from client.");
+                    _logger.LogError("Invalid author object sent from client.");
                     return BadRequest();
                 }
 
-                _dataRepository.Update(authorToUpdate, author);
-                _logger.LogInfo("Author updated.");
+                _dataRepository.UpdateData(authorToUpdate, author);
+                _logger.LogInfo("Author object updated.");
                 return NoContent(); // Ok status code is: 200
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside Update action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'AuthorsController.PutUpdateAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

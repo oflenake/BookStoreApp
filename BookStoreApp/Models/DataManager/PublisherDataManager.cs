@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Contracts;
 using BookStoreApp.Models.DTO;
 using BookStoreApp.Models.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -8,50 +9,54 @@ namespace BookStoreApp.Models.DataManager
 {
     public class PublisherDataManager : IDataRepository<Publisher, PublisherDTO>
     {
-        // Field
+        // Fields
+        private ILoggerManager _logger;
         readonly BookStoreContext _bookStoreContext;
 
         // Constructer
-        public PublisherDataManager(BookStoreContext storeContext)
+        public PublisherDataManager(ILoggerManager logger, BookStoreContext storeContext)
         {
+            _logger = logger;
             _bookStoreContext = storeContext;
         }
 
         // GET: GetAll Publishers - Explicit Loading
-        public IEnumerable<Publisher> GetAll()
+        public IEnumerable<Publisher> GetAllData()
         {
             throw new System.NotImplementedException();
         }
 
         // GET: Get Publisher by id - Eager Loading
-        public Publisher Get(long id)
+        public Publisher GetByIDData(long id)
         {
+            _logger.LogInfo($"PublisherDataManager.GetByIDData - Getting publisher with id: {id}, data.");
             return _bookStoreContext.Publisher
                 .Include(a => a.Book)
                 .Single(b => b.Id == id);
         }
 
         // GET: Get Publisher by id - Explicit Loading
-        public PublisherDTO GetDTO(long id)
+        public PublisherDTO GetByIDDataDto(long id)
         {
             throw new System.NotImplementedException();
         }
 
         // POST: Add Publisher
-        public void Add(Publisher entity)
+        public void AddData(Publisher entity)
         {
             throw new System.NotImplementedException();
         }
 
         // PUT: Update Publisher
-        public void Update(Publisher entityToUpdate, Publisher entity)
+        public void UpdateData(Publisher entityToUpdate, Publisher entity)
         {
             throw new System.NotImplementedException();
         }
 
         // DELETE: Delete Publisher
-        public void Delete(Publisher entity)
+        public void DeleteData(Publisher entity)
         {
+            _logger.LogInfo($"PublisherDataManager.DeleteData - Deleting publisher data.");
             _bookStoreContext.Remove(entity);
             _bookStoreContext.SaveChanges();
         }

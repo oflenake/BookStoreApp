@@ -2,13 +2,13 @@
 
 namespace BookStoreApp.Models.Repository
 {
-    public interface IDataRepository<TEntity, TDTO>
+    public interface IDataRepository<TEntity, TDto>
     {
-        IEnumerable<TEntity> GetAll();
-        TEntity Get(long id);
-        TDTO GetDTO(long id);
-        void Add(TEntity entity);
-        void Update(TEntity entityToUpdate, TEntity entity);
-        void Delete(TEntity entity);
+        IEnumerable<TEntity> GetAllData();
+        TEntity GetByIDData(long id);
+        TDto GetByIDDataDto(long id);
+        void AddData(TEntity entity);
+        void UpdateData(TEntity entityToUpdate, TEntity entity);
+        void DeleteData(TEntity entity);
     }
 }

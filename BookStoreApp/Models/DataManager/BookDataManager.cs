@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Contracts;
 using BookStoreApp.Models.DTO;
 using BookStoreApp.Models.Repository;
 
@@ -7,24 +8,27 @@ namespace BookStoreApp.Models.DataManager
 {
     public class BookDataManager : IDataRepository<Book, BookDTO>
     {
-        // Field
+        // Fields
+        private ILoggerManager _logger;
         readonly BookStoreContext _bookStoreContext;
 
         // Constructor
-        public BookDataManager(BookStoreContext storeContext)
+        public BookDataManager(ILoggerManager logger, BookStoreContext storeContext)
         {
+            _logger = logger;
             _bookStoreContext = storeContext;
         }
 
         // GET: GetAll Books - Explicit Loading
-        public IEnumerable<Book> GetAll()
+        public IEnumerable<Book> GetAllData()
         {
             throw new System.NotImplementedException();
         }
 
         // GET: Get Book by id - Explicit Loading
-        public Book Get(long id)
+        public Book GetByIDData(long id)
         {
+            _logger.LogInfo($"BookDataManager.GetByIDData - Getting book with id: {id}, data.");
             _bookStoreContext.ChangeTracker.LazyLoadingEnabled = false;
 
             var book = _bookStoreContext.Book
@@ -47,25 +51,25 @@ namespace BookStoreApp.Models.DataManager
         }
 
         // GET: Get Book by id - Explicit Loading
-        public BookDTO GetDTO(long id)
+        public BookDTO GetByIDDataDto(long id)
         {
             throw new System.NotImplementedException();
         }
 
         // POST: Add Book
-        public void Add(Book entity)
+        public void AddData(Book entity)
         {
             throw new System.NotImplementedException();
         }
 
         // PUT: Update Book
-        public void Update(Book entityToUpdate, Book entity)
+        public void UpdateData(Book entityToUpdate, Book entity)
         {
             throw new System.NotImplementedException();
         }
 
         // DELETE: Delete Book
-        public void Delete(Book entity)
+        public void DeleteData(Book entity)
         {
             throw new System.NotImplementedException();
         }

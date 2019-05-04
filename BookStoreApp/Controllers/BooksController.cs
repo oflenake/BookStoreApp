@@ -22,13 +22,13 @@ namespace BookStoreApp.Controllers
             _dataRepository = dataRepository;
         }
 
-        // GET: api/Books/5
+        // GET: api/books/4
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetByIDAction(int id)
         {
             try
             {
-                var book = _dataRepository.Get(id);
+                var book = _dataRepository.GetByIDData(id);
                 if (book == null)
                 {
                     _logger.LogError($"Book with id: {id}, hasn't been found in db.");
@@ -40,7 +40,7 @@ namespace BookStoreApp.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetBookById action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'BooksController.GetByIDAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

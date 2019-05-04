@@ -22,7 +22,7 @@ namespace BookStoreApp
     {
         public Startup(IConfiguration configuration)
         {
-            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -37,7 +37,7 @@ namespace BookStoreApp
             services.ConfigureIISIntegration();
             // Call custom external logger service
             services.ConfigureLoggerService();
-            services.AddDbContext<BookStoreContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:BooksDB"]));
+            services.AddDbContext<BookStoreContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DBConnBookSTransact"]));
             services.AddScoped<IDataRepository<Author, AuthorDTO>, AuthorDataManager>();
             services.AddScoped<IDataRepository<Book, BookDTO>, BookDataManager>();
             services.AddScoped<IDataRepository<Publisher, PublisherDTO>, PublisherDataManager>();

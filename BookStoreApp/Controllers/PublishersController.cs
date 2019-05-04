@@ -22,24 +22,26 @@ namespace BookStoreApp.Controllers
             _dataRepository = dataRepository;
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/publishers/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteByIDAction(int id)
         {
             try
             {
-                var publisher = _dataRepository.Get(id);
+                var publisher = _dataRepository.GetByIDData(id);
                 if (publisher == null)
                 {
-                    return NotFound("The Publisher record couldn't be found.");
+                    _logger.LogError($"Publisher with id: {id}, hasn't been found in db.");
+                    return NotFound("Publisher record couldn't be found.");
                 }
 
-                _dataRepository.Delete(publisher);
+                _dataRepository.DeleteData(publisher);
+                _logger.LogInfo($"Deleted publisher with id: {id}");
                 return NoContent(); // Ok status code is: 200
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside DeletePublisherWithId action method: {ex.Message}");
+                _logger.LogError($"Something went wrong inside 'PublishersController.DeleteByIDAction' action method: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

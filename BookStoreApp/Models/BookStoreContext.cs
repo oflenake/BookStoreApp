@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace BookStoreApp.Models
 {
@@ -10,18 +11,15 @@ namespace BookStoreApp.Models
         {
         }
 
+        // Disable Lazy Loading at the context level. It can be enabled 
+        // explicitly when it needs to be utilized.
         public BookStoreContext(DbContextOptions<BookStoreContext> options)
             : base(options)
         {
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
-        //// Disable Lazy Loading at the context level. I can enable 
-        //// lazy-loading explicitly I need to utilize it.
-        //public BookStoreContext(DbContextOptions<BookStoreContext> options)
-        //    : base(options)
-        //{
-        //    ChangeTracker.LazyLoadingEnabled = false;
-        //}
+        public IConfiguration Configuration { get; }
 
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<AuthorContact> AuthorContact { get; set; }
@@ -30,31 +28,24 @@ namespace BookStoreApp.Models
         public virtual DbSet<BookCategory> BookCategory { get; set; }
         public virtual DbSet<Publisher> Publisher { get; set; }
 
+        /***
+         * Enable Lazy Loading with a call to method: UseLazyLoadingProxies.
+         * EF Core will then enable lazy loading for any navigation property that 
+         * can be overridden. Only thing is that it must be virtual and on a 
+         * class that can be inherited from. For example check 'Author.cs' class, 
+         * the BookAuthors navigation property will be lazy-loaded.
+        ***/
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // #warning To protect potentially sensitive information in your connection string, you should 
-                // move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance 
-                // on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=KGUPI-MACHINE;Database=BookStore;Trusted_Connection=True;");
+                // #warning To protect potentially sensitive information in your connection string, you should move it out of 
+                // source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration["ConnectionString:DBConnBookSTransact"]);
             }
         }
-
-        //// Enable Lazy Loading with a call to method: UseLazyLoadingProxies.
-        //// EF Core will then enable lazy loading for any navigation property that 
-        //// can be overridden. Only thing is that it must be virtual and on a 
-        //// class that can be inherited from. For example check Author class, 
-        //// the BookAuthors navigation property will be lazy-loaded.
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder
-        //            .UseLazyLoadingProxies()
-        //            .UseSqlServer("Server=KGUPI-MACHINE;Database=BookStore;Trusted_Connection=True;");
-        //    }
-        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
